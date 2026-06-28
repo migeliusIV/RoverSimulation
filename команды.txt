@@ -1,0 +1,28 @@
+======= container =========
+xhost +local:docker
+docker run -it --rm \
+  -e DISPLAY=$DISPLAY \
+  -e QT_X11_NO_MITSHM=1 \
+  -v /tmp/.X11-unix:/tmp/.X11-unix \
+  -v "$(pwd):/home/ros/my_robot_ws" \
+  --privileged \
+  --ipc=host \
+  my_robot_dev \
+  /bin/bash
+
+=== запуск мира ======
+colcon build --packages-select my_robot_description
+source install/setup.bash
+ros2 launch my_robot_description robot.launch.py
+
+=== запуск рвиза (в другом терминале) ====
+*сначала нужно открыть нужный докер контейнер*
+source /opt/ros/humble/setup.bash
+rviz2
+
+-------------дополнительно--------------------
+=== пустой запуск, дефолтные миры газебо ====
+ros2 launch ros_gz_sim gz_sim.launch.py
+
+=== билд контейнера (уже не нужно) ====
+docker build -f .devcontainer/Dockerfile -t my_robot_dev .
