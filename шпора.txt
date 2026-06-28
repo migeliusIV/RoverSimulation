@@ -1,40 +1,28 @@
-docker build -f .devcontainer/Dockerfile -t my_robot_dev .
-
 ======= container =========
-xhost +local:
-docker run -it --rm \
-  -e DISPLAY=$DISPLAY \
-  -e QT_X11_NO_MITSHM=1 \
-  -v /tmp/.X11-unix:/tmp/.X11-unix \
-  -v "$(pwd):/home/ros/my_robot_ws" \
-  my_robot_dev \
-  /bin/bash
-
 xhost +local:docker
 docker run -it --rm \
   -e DISPLAY=$DISPLAY \
   -e QT_X11_NO_MITSHM=1 \
   -v /tmp/.X11-unix:/tmp/.X11-unix \
   -v "$(pwd):/home/ros/my_robot_ws" \
-  --device /dev/dri:/dev/dri \
+  --privileged \
   --ipc=host \
   my_robot_dev \
   /bin/bash
-
-
-rosdep update
-rosdep install --from-paths src --ignore-src -r -y
-colcon build --symlink-install
-source install/setup.bash
-
-=== пустой запуск ====
-ros2 launch ros_gz_sim gz_sim.launch.py
 
 === запуск мира ======
 colcon build --packages-select my_robot_description
 source install/setup.bash
 ros2 launch my_robot_description robot.launch.py
 
-=== запуск рвиза ====
+=== запуск рвиза (в другом терминале) ====
+*сначала нужно открыть нужный докер контейнер*
 source /opt/ros/humble/setup.bash
 rviz2
+
+-------------дополнительно--------------------
+=== пустой запуск, дефолтные миры газебо ====
+ros2 launch ros_gz_sim gz_sim.launch.py
+
+=== билд контейнера (уже не нужно) ====
+docker build -f .devcontainer/Dockerfile -t my_robot_dev .
