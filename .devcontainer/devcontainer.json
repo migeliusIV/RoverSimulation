@@ -1,0 +1,27 @@
+{
+  "name": "ROS2 Gazebo Dev Container",
+  "build": {
+    "dockerfile": "Dockerfile",
+    "args": {
+      "USERNAME": "ros",
+      "USER_UID": "1000",
+      "USER_GID": "1000"
+    }
+  },
+  "workspaceFolder": "/home/ros/my_robot_ws",
+  "workspaceMount": "source=${localWorkspaceFolder},target=/home/ros/my_robot_ws,type=bind",
+  "privileged": true,
+  "remoteUser": "ros",
+  "runArgs": [
+  "--net=host",
+  "--ipc=host",
+  "--pid=host",
+  "-e", "DISPLAY=${localEnv:DISPLAY}",
+  "-e", "QT_X11_NO_MITSHM=1",
+  "-v", "/tmp/.X11-unix:/tmp/.X11-unix"
+  ],
+  "containerEnv": {
+    "ROS_DOMAIN_ID": "42",
+    "ROS_LOCALHOST_ONLY": "0"
+  }
+}
